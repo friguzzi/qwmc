@@ -22,7 +22,7 @@ namespace Quantum.Sample
 			CCNOT(queryRegister[0],queryRegister[1],ancilla[0]);
 			CCNOT(queryRegister[1],queryRegister[2],ancilla[1]);
 			CCNOT(queryRegister[0],queryRegister[2],ancilla[2]);
-			(Controlled X)([ancilla[1],ancilla[2]],target);
+			(Controlled X)([ancilla[0],ancilla[1],ancilla[2],queryRegister[3]],target);
 			CCNOT(queryRegister[0],queryRegister[2],ancilla[2]);
 			CCNOT(queryRegister[1],queryRegister[2],ancilla[1]);
 			CCNOT(queryRegister[0],queryRegister[1],ancilla[0]);
@@ -60,19 +60,28 @@ namespace Quantum.Sample
         
         ApplyMarkingOracleAsPhaseOracle(oracle,register);
         ApplyToEachCA(H, register);
-        ApplyToEachCA(X, register);
-        Controlled Z(Most(register), Tail(register));
-        ApplyToEachCA(X, register);
-        R(PauliI, 2.0 * PI(), register[0]);
+        // from https://quantumcomputing.stackexchange.com/questions/4268/how-to-construct-the-inversion-about-the-mean-operator/4269#4269
+        using (ancilla = Qubit()){
+                (ControlledOnInt(0, X))(register, ancilla); // Bit flips the ancilla to |1⟩ if register is |0...0⟩   
+                Z(ancilla);                                 // Ancilla phase (and therefore whole register phase) becomes -1 if above condition is satisfied
+                (ControlledOnInt(0, X))(register, ancilla); // Puts ancilla back in |0⟩  
+        } 
+
         ApplyToEachCA(H, register);
+
+        // Alternative
+        // ApplyToEachCA(X, register);
+        // Controlled Z(Most(register), Tail(register));
+        // ApplyToEachCA(X, register);
+        // R(PauliI, 2.0 * PI(), register[0]);
+
     }    
 
 
 	operation QWMC() : Double 
 	{
-        mutable phase = -1.0;
 		let n=5;
-		using ((reg,phaseRegister)=(Qubit[3 ], Qubit[n]))
+		using ((reg,phaseRegister)=(Qubit[4], Qubit[n]))
 		{
 			let oracle = OracleToDiscrete(GroverIteration(_,SprinklerAnc(_,_)));
 			// Allocate qubits to hold the eigenstate of U and the phase in a big endian register 
@@ -85,17 +94,18 @@ namespace Quantum.Sample
 			Ry(theta0,reg[0]);
 			Ry(theta1,reg[1]);
 			Ry(theta2,reg[2]);
+            H(reg[3]);
             // Call library
             QuantumPhaseEstimation(oracle, reg, phaseRegisterBE);
             // Read out the phase
-            set phase = IntAsDouble(MeasureInteger(BigEndianAsLittleEndian(phaseRegisterBE))) / IntAsDouble(1 <<< (n));
+            let phase = IntAsDouble(MeasureInteger(BigEndianAsLittleEndian(phaseRegisterBE))) / IntAsDouble(1 <<< (n));
 
             ResetAll(reg);
             ResetAll(phaseRegister);
-        }
-		let angle = PI()*phase;
-        let res = (PowD(Sin(angle),2.0));
+		    let angle = PI()*phase;
+            let res = (PowD(Sin(angle),2.0));
 
-        return res;
+            return res;
+        }
     }
 }

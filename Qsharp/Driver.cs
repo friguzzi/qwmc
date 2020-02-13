@@ -11,15 +11,18 @@ namespace Quantum.Sample
         {
             using (var qsim = new QuantumSimulator())
             {
-		var tot=0.0;
+		        var tot=0.0;
+                System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
                 for (int i = 0; i < 10; i++)
                 {
                     var res = QWMC.Run(qsim).Result;
-		    tot = tot+res;
+		            tot = tot+res;
                     System.Console.WriteLine($"Res:{res}");
                 }
-		var av=tot/10.0;
+        		var av=tot/10.0;
                 System.Console.WriteLine($"Av:{av}");
+                stopwatch.Stop();
+                Console.WriteLine(stopwatch.ElapsedMilliseconds);
             }
         }
     }
