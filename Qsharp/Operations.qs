@@ -103,8 +103,13 @@ namespace Quantum.Sample
 
             ResetAll(reg);
             ResetAll(phaseRegister);
-		    let angle = PI()*phase;
+            // the phase returned by QuantumPhaseEstimation is the value phi such that
+            // e^{2pi phi} is an eigenvalue
+		    let angle = PI()*phase; 
+            // angle is theta/2 where e^theta is an eigenvalue
             let res = 2.0*PowD(Sin(angle),2.0);
+            // the 2.0 factor is added because there is an extra bit with weight 0.5
+            // that is introduced to make the weighted count < 0.5
 
             return res;
         }
