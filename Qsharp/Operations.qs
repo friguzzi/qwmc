@@ -64,9 +64,10 @@ namespace Quantum.Sample
         using (ancilla = Qubit()){
                 (ControlledOnInt(0, X))(register, ancilla); // Bit flips the ancilla to |1⟩ if register is |0...0⟩   
                 Z(ancilla);                                 // Ancilla phase (and therefore whole register phase) becomes -1 if above condition is satisfied
+                
                 (ControlledOnInt(0, X))(register, ancilla); // Puts ancilla back in |0⟩  
         } 
-
+        R(PauliI, 2.0 * PI(), register[0]);
         ApplyToEachCA(H, register);
 
         // Alternative
@@ -103,7 +104,7 @@ namespace Quantum.Sample
             ResetAll(reg);
             ResetAll(phaseRegister);
 		    let angle = PI()*phase;
-            let res = (PowD(Sin(angle),2.0));
+            let res = 2.0*PowD(Sin(angle),2.0);
 
             return res;
         }
