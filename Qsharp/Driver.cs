@@ -1,7 +1,7 @@
 using System;
-
 using Microsoft.Quantum.Simulation.Core;
 using Microsoft.Quantum.Simulation.Simulators;
+using System.Collections.Generic;
 
 namespace Quantum.Sample
 {
@@ -11,18 +11,31 @@ namespace Quantum.Sample
         {
             using (var qsim = new QuantumSimulator())
             {
-		        var tot=0.0;
+                IDictionary<string, int> dict = new Dictionary<string, int>();
                 System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     var res = QWMC.Run(qsim).Result;
-		            tot = tot+res;
-                    System.Console.WriteLine($"Res:{res}");
+                    string s = Convert.ToString(res);
+                    int result;
+                    if (dict.TryGetValue(s, out result))
+                    {
+                        dict.Remove(s);
+                        dict.Add(s, result + 1);
+                    }
+                    else
+                    {
+
+                        dict.Add(s, 1);
+                    }
+                    System.Console.WriteLine($"Res:{s}");
                 }
-        		var av=tot/10.0;
-                System.Console.WriteLine($"Av:{av}");
                 stopwatch.Stop();
                 Console.WriteLine(stopwatch.ElapsedMilliseconds);
+                foreach (KeyValuePair<string, int> item in dict)
+                {
+                    Console.WriteLine("Key: {0}, Value: {1}", item.Key, item.Value);
+                }
             }
         }
     }
