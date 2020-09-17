@@ -67,7 +67,8 @@ namespace Quantum.Sample
                 
                 (ControlledOnInt(0, X))(register, ancilla); // Puts ancilla back in |0⟩  
         } 
-        R(PauliI, 2.0 * PI(), register[0]);
+        Ry(2.0 * PI(), register[0]);
+//        R(PauliI, 2.0 * PI(), register[0]);
         ApplyToEachCA(H, register);
 
         // Alternative
