@@ -90,9 +90,9 @@ namespace Quantum.Sample
             
             let phaseRegisterBE = BigEndian(phaseRegister);
             // Prepare the eigenstate of U
-			let theta0=2.0*ArcCos(Sqrt(0.55));
-			let theta1=2.0*ArcCos(Sqrt(0.3));
-			let theta2=2.0*ArcCos(Sqrt(0.7));
+			let theta0=2.0*ArcCos(Sqrt(0.45));
+			let theta1=2.0*ArcCos(Sqrt(0.7));
+			let theta2=2.0*ArcCos(Sqrt(0.3));
 			Ry(theta0,reg[0]);
 			Ry(theta1,reg[1]);
 			Ry(theta2,reg[2]);
