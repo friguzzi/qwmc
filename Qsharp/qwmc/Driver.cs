@@ -21,7 +21,7 @@ namespace Quantum.Sample
                     results[i] = wmc_rounded.ToString("0.000", CultureInfo.InvariantCulture);
                 }
                 stopwatch.Stop();
-                Console.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0);
+                Console.WriteLine("Elapsed time: "+stopwatch.ElapsedMilliseconds / 1000.0);
                 PrintResults(results);
             }
         }
