@@ -68,24 +68,6 @@ namespace Quantum.Sample
         ApplyToEachCA(X, q);
         Ry(2.0 * PI(), q[0]);
         PrepareEigenState(q);
-
-        // Alternative
-        // ApplyToEachCA(X, q);
-        // Controlled Z(Most(q), Tail(q));
-        // ApplyToEachCA(X, q);
-        // R(PauliI, 2.0 * PI(), q[0]);
-
-        // other alternative
-        // from https://quantumcomputing.stackexchange.com/questions/4268/how-to-construct-the-inversion-about-the-mean-operator/4269#4269
-        // using (a = Qubit()){
-        //   (ControlledOnInt(0, X))(q, a); // Bit flips the a to |1⟩ if register is |0...0⟩   
-        //   Z(a);                                 // a phase (and therefore whole register phase) becomes -1 if above condition is satisfied
-        //   (ControlledOnInt(0, X))(q, a); // Puts a back in |0⟩  
-        // } 
-
-        // alternative to 
-        // R(PauliI, 2.0 * PI(), q[0]);
-        // Ry(2.0 * PI(), q[0]);
     }    
 
     operation PrepareEigenState(q: Qubit[]): Unit is Ctl+Adj 
@@ -97,9 +79,6 @@ namespace Quantum.Sample
 			Ry(theta0,q[0]);
 			Ry(theta1,q[1]);
 			Ry(theta2,q[2]);
-//            H(q[0]);
-//            H(q[1]);
-//            H(q[2]);
             H(q[3]);
 	}
 
@@ -122,7 +101,6 @@ namespace Quantum.Sample
             // the phase returned by QuantumPhaseEstimation is the value phi such that
             // e^{2pi phi} is an eigenvalue
 		    let angle = 2.0*PI()*phase; 
-            // angle is theta/2 where e^theta is an eigenvalue
             let wmc = 2.0*PowD(Sin(angle/2.0),2.0);
             // the 2.0 factor is added because there is an extra bit with weight 0.5
             // that is introduced to make the weighted count < 0.5
