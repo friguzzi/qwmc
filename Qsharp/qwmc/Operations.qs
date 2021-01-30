@@ -54,11 +54,11 @@ namespace Quantum.Sample
 
     
     // The Grover iteration
-    operation GroverIteration (q : Qubit[], prepareEigenState: (Qubit[]=> Unit is Adj+Ctl), oracle : ((Qubit[],Qubit) => Unit is Adj+Ctl)) : Unit is Ctl+Adj
+    operation GroverIteration(q : Qubit[], oracle : ((Qubit[],Qubit) => Unit is Adj+Ctl)) : Unit is Ctl+Adj
 	{
         
         ApplyMarkingOracleAsPhaseOracle(oracle,q);
-        Adjoint PrepareEigenState(q);
+        Adjoint Rot(q);
         ApplyToEachCA(X, q); // brings |0..0> to |1..1>
         using (a = Qubit()){
     		(Controlled X)([q[0],q[1],q[2],q[3]],a);  // Bit flips the a to |1⟩ if register is |1...1⟩ 
@@ -67,19 +67,19 @@ namespace Quantum.Sample
         }
         ApplyToEachCA(X, q);
         Ry(2.0 * PI(), q[0]);
-        PrepareEigenState(q);
+        Rot(q);
     }    
 
-    operation PrepareEigenState(q: Qubit[]): Unit is Ctl+Adj 
+    operation Rot(q: Qubit[]): Unit is Ctl+Adj 
     {
-            // Prepare the eigenstate of U
-            let theta0=2.0*ArcSin(Sqrt(0.55));
-			let theta1=2.0*ArcSin(Sqrt(0.3));
-			let theta2=2.0*ArcSin(Sqrt(0.7));
-			Ry(theta0,q[0]);
-			Ry(theta1,q[1]);
-			Ry(theta2,q[2]);
-            H(q[3]);
+        // Prepare the eigenstate of U
+        let theta0=2.0*ArcSin(Sqrt(0.55));
+	    let theta1=2.0*ArcSin(Sqrt(0.3));
+	    let theta2=2.0*ArcSin(Sqrt(0.7));
+	    Ry(theta0,q[0]);
+	    Ry(theta1,q[1]);
+	    Ry(theta2,q[2]);
+        H(q[3]);
 	}
 
 	operation QWMC() : Double 
@@ -87,8 +87,8 @@ namespace Quantum.Sample
 		let n=7;
 		using ((q,p)=(Qubit[4], Qubit[n]))
 		{
-			let oracle = OracleToDiscrete(GroverIteration(_,PrepareEigenState(_),Sprinkler(_,_)));
-            PrepareEigenState(q);
+			let oracle = OracleToDiscrete(GroverIteration(_,Sprinkler(_,_)));
+            Rot(q);
 			// Allocate qubits to hold the eigenstate of U and the phase in a big endian register 
             let pBE = BigEndian(p);
             // Call library
