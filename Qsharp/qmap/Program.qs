@@ -70,18 +70,18 @@
 	}
 
 
-    operation QMAP() : Result[] 
-    {
-        let weights = [0.55, 0.3, 0.7];
+operation QMAP() : Result[] 
+{
+    let weights = [0.55, 0.3, 0.7];
         
-        use reg = Qubit[4];
-        Rot(reg, weights);
-        GroverIteration(reg, Sprinkler, weights);
-        let query = Subarray([0, 2],reg);
-        let state = MultiM(query);
+    use reg = Qubit[4];
+    Rot(reg, weights);
+    GroverIteration(reg, Sprinkler, weights);
+    let query = Subarray([0, 2],reg);
+    let state = MultiM(query);
 
-        ResetAll(reg);
-        return state;
-    }
+    ResetAll(reg);
+    return state;
+}
 }
 

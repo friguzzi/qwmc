@@ -69,7 +69,7 @@ namespace Quantum.Sample
 
     operation QWMC() : Double 
     {
-        let n = 7;
+        let n = 5;
         let weights = [0.55, 0.3, 0.7];
         let oracle = OracleToDiscrete(GroverIteration(_, Sprinkler(_, _), weights));
 

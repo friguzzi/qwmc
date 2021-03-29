@@ -12,7 +12,7 @@ namespace Quantum.Sample
         static void Main(string[] args)
         {
             using var qsim = new QuantumSimulator();
-            int n = 100;
+            int n = 1000;
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
             string[] results = new string[n];
             for (int i = 0; i < n; i++)
